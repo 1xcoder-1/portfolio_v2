@@ -1,0 +1,176 @@
+---
+title: "Building Production Ready AI Agents with LLMs and Tool Calling"
+publishedAt: "2026-03-18"
+summary: "A technical guide on how to build reliable AI agents: structured outputs with Zod, deterministic state machines, tool-calling pipelines, and automated evals."
+image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80"
+---
+
+Most AI agent demos look magical in a 30-second Twitter video, but fail miserably when deployed to production. Why? Because pure probabilistic language models are non-deterministic, prone to infinite loops, and frequently output malformed JSON.
+
+To build production-grade AI agents that businesses can actually depend on, we need to wrap language models in deterministic software engineering guardrails.
+
+In this deep dive, we will build a robust AI agent system using TypeScript, Zod schema validation, and tool-calling state machines.
+
+## 1. The Core Architecture of a Production Agent
+
+A reliable AI agent consists of four core building blocks:
+
+1. **System Prompt & Role Definition**: Clear boundaries, tool constraints, and output guidelines.
+2. **Tool Registry**: Strictly typed functions the agent can execute (e.g., search database, query weather, send email).
+3. **Structured Schema Validation**: Validating model tool parameters before execution using Zod.
+4. **Execution Loop & State Machine**: Managing turn limits, retries, and context window compaction.
+
+```
+       +---------------------------------------------+
+       |                  User Goal                  |
+       +---------------------------------------------+
+                              |
+                              v
+                 +--------------------------+
+                 |     Agent LLM Planner    |
+                 +--------------------------+
+                   /          |           \
+                  v           v            v
+             Tool 1        Tool 2       Tool 3
+          (Search DB)   (Send Email)  (Run Script)
+                  \           |            /
+                   v          v           v
+                 +--------------------------+
+                 |  Zod Validation & Exec   |
+                 +--------------------------+
+                              |
+                              v
+                 +--------------------------+
+                 |       Final Result       |
+                 +--------------------------+
+```
+
+## 2. Defining Type Safe Tools with Zod
+
+Never allow an LLM to invoke a tool with unstructured parameters. Always define strict Zod schemas to ensure inputs conform to your exact expectations:
+
+```typescript
+import { z } from "zod";
+
+export const DatabaseQuerySchema = z.object({
+  table: z.enum(["users", "transactions", "invoices"]),
+  filters: z.record(z.string(), z.union([z.string(), z.number()])),
+  limit: z.number().int().min(1).max(100).default(10),
+});
+
+export type DatabaseQueryInput = z.infer<typeof DatabaseQuerySchema>;
+
+export const databaseTool = {
+  name: "query_database",
+  description: "Execute a safe, read-only query against the application database.",
+  parameters: DatabaseQuerySchema,
+  execute: async (input: DatabaseQueryInput) => {
+    // Validate input strictly at runtime
+    const parsed = DatabaseQuerySchema.parse(input);
+    
+    // Perform database query safely
+    return await db.query(parsed.table, {
+      where: parsed.filters,
+      limit: parsed.limit,
+    });
+  },
+};
+```
+
+## 3. Implementing the Agent Execution Loop
+
+Here is a robust, resilient agent execution loop with max iteration limits, error recovery, and tool execution feedback:
+
+```typescript
+import OpenAI from "openai";
+
+interface Message {
+  role: "system" | "user" | "assistant" | "tool";
+  content: string;
+  tool_call_id?: string;
+  tool_calls?: any[];
+}
+
+export async function runAgentLoop(
+  userPrompt: string,
+  tools: Record<string, any>,
+  maxSteps = 6
+): Promise<string> {
+  const openai = new OpenAI();
+  const messages: Message[] = [
+    {
+      role: "system",
+      content: "You are an autonomous engineering assistant. Use the provided tools to accomplish the user goal. If a tool fails, read the error and try an alternative approach.",
+    },
+    { role: "user", content: userPrompt },
+  ];
+
+  for (let step = 0; step < maxSteps; step++) {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: messages as any,
+      tools: Object.values(tools).map((t: any) => ({
+        type: "function",
+        function: {
+          name: t.name,
+          description: t.description,
+          parameters: t.parameters.shape ? zodToJsonSchema(t.parameters) : {},
+        },
+      })),
+      tool_choice: "auto",
+    });
+
+    const choice = response.choices[0].message;
+
+    // If no tool calls, the agent has finished thinking and has returned the answer
+    if (!choice.tool_calls || choice.tool_calls.length === 0) {
+      return choice.content || "Task completed.";
+    }
+
+    messages.push(choice as any);
+
+    // Execute each tool call
+    for (const toolCall of choice.tool_calls) {
+      const toolName = toolCall.function.name;
+      const tool = tools[toolName];
+
+      if (!tool) {
+        messages.push({
+          role: "tool",
+          tool_call_id: toolCall.id,
+          content: JSON.stringify({ error: `Tool ${toolName} does not exist.` }),
+        });
+        continue;
+      }
+
+      try {
+        const rawArgs = JSON.parse(toolCall.function.arguments);
+        const result = await tool.execute(rawArgs);
+        messages.push({
+          role: "tool",
+          tool_call_id: toolCall.id,
+          content: JSON.stringify({ success: true, data: result }),
+        });
+      } catch (err: any) {
+        messages.push({
+          role: "tool",
+          tool_call_id: toolCall.id,
+          content: JSON.stringify({ success: false, error: err.message }),
+        });
+      }
+    }
+  }
+
+  throw new Error("Agent reached maximum execution steps without concluding.");
+}
+```
+
+## 4. Key Rules for Production Stability
+
+1. **Deterministic Guardrails**: Always enforce a hard `maxSteps` limit to prevent infinite spending loops.
+2. **Read-Only vs Destructive Actions**: Never give an agent unilateral permission to delete records, send live emails, or execute `DROP TABLE`. Require Human-In-The-Loop approval for destructive operations.
+3. **Structured Evals**: Build automated test suites with real assertions on agent outputs to ensure prompts don't degrade over time.
+
+## Conclusion
+
+Agents are only as good as the software architecture surrounding them. By treating LLMs as probabilistic calculation units inside strict, type-safe TypeScript state machines, you can build autonomous systems that are fast, reliable, and ready for real enterprise workloads.

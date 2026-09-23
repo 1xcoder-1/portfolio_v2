@@ -12,6 +12,7 @@ export type BlogIndexPost = {
   title: string;
   publishedAt: string;
   summary?: string;
+  image?: string;
 };
 
 type BlogIndexProps = {
@@ -58,7 +59,7 @@ export function BlogIndex({ posts }: BlogIndexProps) {
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Filter by title…"
           className={cn(
-            "w-full rounded-md border border-neutral-200 bg-white py-2.5 pr-3 pl-10 text-sm text-neutral-800",
+            "w-full rounded-md border border-neutral-200 bg-white py-2.5 pr-3 pl-10 text-sm text-neutral-800 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-100",
             "placeholder:text-foreground/40",
             "focus:border-primary focus:ring-primary focus:ring-1 focus:outline-none",
           )}
@@ -76,7 +77,7 @@ export function BlogIndex({ posts }: BlogIndexProps) {
             variants={STAGGER_CONTAINER}
             initial="hidden"
             animate="show"
-            className="flex flex-col gap-4"
+            className="flex flex-col gap-3"
           >
             <AnimatePresence mode="popLayout">
               {filtered.map((post) => (
@@ -91,6 +92,8 @@ export function BlogIndex({ posts }: BlogIndexProps) {
                     title={post.title}
                     slug={post.slug}
                     publishedAt={post.publishedAt}
+                    summary={post.summary}
+                    image={post.image}
                   />
                 </motion.li>
               ))}
@@ -101,3 +104,4 @@ export function BlogIndex({ posts }: BlogIndexProps) {
     </motion.section>
   );
 }
+

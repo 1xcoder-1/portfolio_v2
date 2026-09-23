@@ -11,6 +11,7 @@ export type BlogArticleFrontMatter = {
   title: string;
   publishedAt: string;
   summary?: string;
+  image?: string;
   readingTime?: { text: string };
 };
 
@@ -31,7 +32,7 @@ export function BlogArticleShell({
         variants={STAGGER_CONTAINER}
         initial="hidden"
         animate="show"
-        className="pt-4"
+        className="pt-8 md:pt-10"
       >
         <motion.h2
           variants={FADE_UP_VARIANT}
@@ -65,6 +66,19 @@ export function BlogArticleShell({
             </>
           ) : null}
         </motion.div>
+
+        {frontMatter.image ? (
+          <motion.div
+            variants={FADE_UP_VARIANT}
+            className="mt-6 overflow-hidden rounded-xl border border-neutral-200 bg-neutral-100 shadow-md dark:border-neutral-800 dark:bg-neutral-900"
+          >
+            <img
+              src={frontMatter.image}
+              alt={frontMatter.title}
+              className="h-auto w-full object-cover"
+            />
+          </motion.div>
+        ) : null}
 
         <DottedSeparator className="my-8" />
 

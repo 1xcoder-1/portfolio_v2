@@ -23,10 +23,15 @@ export const metadata: Metadata = {
   },
   description:
     "Full-Stack Developer & Designer specializing in MERN stack, Next.js, and modern digital experiences.",
+  icons: {
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
   openGraph: {
-    title: "Abdullah - Full-Stack Developer, Designer & Creator",
+    title: "Abdullah - Developer, Builder & Tech Explorer",
     description:
-      "Full-Stack Developer & Designer specializing in MERN stack, Next.js, and modern digital experiences.",
+      "Abdullah, a developer, builder, and tech explorer passionate about creating modern digital experiences.",
     url: siteUrl,
     siteName: "Abdullah",
     locale: "en_US",
@@ -34,9 +39,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Abdullah - Full-Stack Developer, Designer & Creator",
+    title: "Abdullah - Developer, Builder & Tech Explorer",
     description:
-      "Full-Stack Developer & Designer specializing in MERN stack, Next.js, and modern digital experiences.",
+      "Abdullah, a developer, builder, and tech explorer passionate about creating modern digital experiences.",
   },
 };
 

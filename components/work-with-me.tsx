@@ -7,9 +7,10 @@ import Link from "next/link";
 import { Box } from "./box";
 import { cn } from "@/lib/utils";
 import {
+  IconMail,
+  IconBrandLinkedin,
+  IconBrandGithub,
   IconAppWindowFilled,
-  IconBrandZoom,
-  IconVideoFilled,
 } from "@tabler/icons-react";
 import { AnimatePresence, motion } from "motion/react";
 import {
@@ -18,16 +19,23 @@ import {
   FADE_UP_VARIANT,
 } from "@/lib/motion-config";
 
+import { CalModal } from "./cal-modal";
+
 type WorkItem = {
   title: string;
   description: string;
   boxClassName: string;
   skeleton: React.ReactNode;
-} & ({ type: "link"; href: string } | { type: "copyEmail"; email: string });
+} & (
+  | { type: "link"; href: string }
+  | { type: "copyEmail"; email: string }
+  | { type: "cal" }
+);
 
 export const WorkWithMe = () => {
   const [copied, setCopied] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isCalOpen, setIsCalOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -45,37 +53,39 @@ export const WorkWithMe = () => {
 
   const work: WorkItem[] = [
     {
-      title: "Get in touch / Email me",
-      description: "Drop a line for freelance projects, collaborations or full-time roles.",
+      title: "Consultation",
+      description: "Get on a call or email me to discuss your projects.",
       type: "copyEmail",
       email: "1xcoder@proton.me",
       boxClassName:
-        "bg-linear-to-b from-blue-400 to-blue-600 ring-offset-blue-500",
-      skeleton: (
-        <IconAppWindowFilled className="size-4 text-white drop-shadow-xl drop-shadow-black/40" />
-      ),
+        "bg-linear-to-b from-blue-500 to-blue-600 shadow-md shadow-blue-500/20",
+      skeleton: <IconMail className="size-4 text-white" />,
+    },
+    {
+      title: "Hire me",
+      description: "Let's build a modern web or mobile app for your business.",
+      type: "cal",
+      boxClassName:
+        "bg-linear-to-b from-orange-500 to-amber-600 shadow-md shadow-orange-500/20",
+      skeleton: <IconAppWindowFilled className="size-4 text-white" />,
     },
     {
       title: "Connect on LinkedIn",
-      description: "Professional updates, network discussions and direct messages.",
+      description: "Professional updates, networking, and direct messages.",
       type: "link",
       href: "https://linkedin.com/in/1xcoder",
       boxClassName:
-        "bg-linear-to-b from-sky-400 to-blue-700 ring-offset-sky-500",
-      skeleton: (
-        <IconBrandZoom className="size-4 text-white drop-shadow-xl drop-shadow-black/40" />
-      ),
+        "bg-linear-to-b from-sky-500 to-blue-700 shadow-md shadow-sky-500/20",
+      skeleton: <IconBrandLinkedin className="size-4 text-white" />,
     },
     {
       title: "Check my GitHub",
-      description: "Explore my open-source codebases, MERN repositories and web projects.",
+      description: "Explore my open-source codebases and tech projects.",
       type: "link",
       href: "https://github.com/1xcoder-1",
       boxClassName:
-        "bg-linear-to-b from-emerald-400 to-teal-700 ring-offset-emerald-500",
-      skeleton: (
-        <IconVideoFilled className="size-4 text-white drop-shadow-xl drop-shadow-black/40" />
-      ),
+        "bg-linear-to-b from-emerald-500 to-teal-700 shadow-md shadow-emerald-500/20",
+      skeleton: <IconBrandGithub className="size-4 text-white" />,
     },
   ];
 
@@ -91,11 +101,50 @@ export const WorkWithMe = () => {
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, amount: 0.2 }}
+      className="flex flex-col gap-5"
     >
-      <Subheading>Work with me</Subheading>
+      <motion.span
+        variants={FADE_UP_VARIANT}
+        className="text-foreground/45 font-mono text-[12px] font-medium tracking-[0.2em] uppercase"
+      >
+        WORK WITH ME
+      </motion.span>
       {mounted ? createPortal(toast, document.body) : null}
-      <div className="mt-8 flex flex-col gap-6">
+      <CalModal isOpen={isCalOpen} onClose={() => setIsCalOpen(false)} />
+      <div className="mt-1 flex flex-col gap-3.5">
         {work.map((item) => {
+          if (item.type === "cal") {
+            return (
+              <motion.div
+                key={item.title}
+                variants={FADE_UP_VARIANT}
+                whileHover={{ x: 3 }}
+                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setIsCalOpen(true)}
+                  className="group flex w-full cursor-pointer items-center gap-3.5 py-1 text-left transition-colors"
+                >
+                  <div
+                    className={`flex size-8.5 shrink-0 items-center justify-center rounded-[10px] shadow-sm ring-1 ring-white/20 ${item.boxClassName}`}
+                  >
+                    {item.skeleton}
+                  </div>
+                  <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5 text-sm md:text-[15px]">
+                    <span className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                      {item.title}
+                    </span>
+                    <span className="text-foreground/30 font-light select-none">·</span>
+                    <span className="text-foreground/65 text-xs md:text-sm font-normal">
+                      {item.description}
+                    </span>
+                  </div>
+                </button>
+              </motion.div>
+            );
+          }
+
           if (item.type === "copyEmail") {
             return (
               <motion.div
@@ -107,14 +156,22 @@ export const WorkWithMe = () => {
                 <button
                   type="button"
                   onClick={() => handleCopyEmail(item.email)}
-                  className="group flex w-full cursor-pointer flex-col items-start gap-1 text-left md:flex-row md:items-center md:gap-2"
+                  className="group flex w-full cursor-pointer items-center gap-3.5 py-1 text-left transition-colors"
                 >
-                  <Box className={cn("", item.boxClassName)}>{item.skeleton}</Box>
-                  <p className="text-foreground group-hover:text-primary shrink-0 font-medium transition-colors">
-                    {item.title}
-                  </p>
-                  <div className="hidden size-1 rounded-full bg-neutral-200 md:block"></div>
-                  <p className="text-foreground/70">{item.description}</p>
+                  <div
+                    className={`flex size-8.5 shrink-0 items-center justify-center rounded-[10px] shadow-sm ring-1 ring-white/20 ${item.boxClassName}`}
+                  >
+                    {item.skeleton}
+                  </div>
+                  <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5 text-sm md:text-[15px]">
+                    <span className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                      {item.title}
+                    </span>
+                    <span className="text-foreground/30 font-light select-none">·</span>
+                    <span className="text-foreground/65 text-xs md:text-sm font-normal">
+                      {item.description}
+                    </span>
+                  </div>
                 </button>
               </motion.div>
             );
@@ -130,14 +187,23 @@ export const WorkWithMe = () => {
               <Link
                 href={item.href}
                 target="_blank"
-                className="group flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-2"
+                rel="noopener noreferrer"
+                className="group flex items-center gap-3.5 py-1 transition-colors"
               >
-                <Box className={cn("", item.boxClassName)}>{item.skeleton}</Box>
-                <p className="text-foreground group-hover:text-primary shrink-0 font-medium transition-colors">
-                  {item.title}
-                </p>
-                <div className="hidden size-1 rounded-full bg-neutral-200 md:block"></div>
-                <p className="text-foreground/70">{item.description}</p>
+                <div
+                  className={`flex size-8.5 shrink-0 items-center justify-center rounded-[10px] shadow-sm ring-1 ring-white/20 ${item.boxClassName}`}
+                >
+                  {item.skeleton}
+                </div>
+                <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5 text-sm md:text-[15px]">
+                  <span className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                    {item.title}
+                  </span>
+                  <span className="text-foreground/30 font-light select-none">·</span>
+                  <span className="text-foreground/65 text-xs md:text-sm font-normal">
+                    {item.description}
+                  </span>
+                </div>
               </Link>
             </motion.div>
           );

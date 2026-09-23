@@ -20,8 +20,8 @@ export default async function SponsorsPage() {
   return (
     <>
       <Container className="min-h-screen">
-        <div className="flex flex-col gap-5 pt-4">
-          <span className="text-foreground/45 font-mono text-[11px] font-medium tracking-[0.2em] uppercase">
+        <div className="flex flex-col gap-7 pt-8 md:pt-10">
+          <span className="text-foreground/45 font-mono text-[12px] font-medium tracking-[0.2em] uppercase">
             SPONSOR
           </span>
           <div className="text-foreground text-base leading-relaxed">

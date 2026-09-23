@@ -27,35 +27,22 @@ export function DottedUnderline({
   color,
   className,
 }: DottedUnderlineProps) {
-  const patternId = React.useId().replace(/:/g, "");
-
   return (
-    <svg
+    <span
       className={cn(
-        "pointer-events-none absolute bottom-0 left-0 w-full",
+        "pointer-events-none absolute bottom-0 left-0 block w-full",
         color == null && "text-neutral-400",
         className,
       )}
-      style={{ height: stripHeight }}
-      aria-hidden
-      preserveAspectRatio="none"
-    >
-      <defs>
-        <pattern
-          id={patternId}
-          width={patternWidth}
-          height={patternHeight}
-          patternUnits="userSpaceOnUse"
-        >
-          <circle
-            cx={patternWidth / 2}
-            cy={patternHeight / 2}
-            r={dotRadius}
-            fill={color ?? "currentColor"}
-          />
-        </pattern>
-      </defs>
-      <rect width="100%" height="100%" fill={`url(#${patternId})`} />
-    </svg>
+      style={{
+        height: stripHeight,
+        backgroundImage: `radial-gradient(circle at ${patternWidth / 2}px ${patternHeight / 2}px, ${color ?? "currentColor"} ${dotRadius}px, transparent ${dotRadius}px)`,
+        backgroundSize: `${patternWidth}px ${patternHeight}px`,
+        backgroundRepeat: "repeat-x",
+        backgroundPosition: "0 0",
+      }}
+      aria-hidden="true"
+    />
   );
 }
+

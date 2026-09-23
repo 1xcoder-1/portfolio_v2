@@ -8,6 +8,7 @@ import { DottedSeparator } from "./separator";
 
 type FontOption = "inter" | "schibsted" | "geist";
 type ColorOption =
+  | "dark"
   | "regular"
   | "rose"
   | "emerald"
@@ -37,6 +38,18 @@ const COLORS: {
   ringOffset: string;
   activeRing: string;
 }[] = [
+  {
+    id: "dark",
+    label: "Dark",
+    swatch: "bg-neutral-900",
+    bg: "#0a0a0a",
+    primary: "#ffffff",
+    foreground: "#d4d4d4",
+    gradientFrom: "from-neutral-800",
+    gradientTo: "to-neutral-950",
+    ringOffset: "ring-offset-neutral-800",
+    activeRing: "ring-neutral-400",
+  },
   {
     id: "regular",
     label: "Paper",

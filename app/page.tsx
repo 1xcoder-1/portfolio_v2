@@ -16,8 +16,8 @@ type HomeBlogPost = {
 };
 
 export const metadata: Metadata = {
-  title: "Abdullah (1xcoder) - Software Engineer & Full-Stack Developer",
-  description: "Full-stack developer, builder, and open-source enthusiast.",
+  title: "Abdullah (1xcoder) - Developer, Builder & Tech Explorer",
+  description: "Abdullah, a developer, builder, and tech explorer passionate about creating modern digital experiences.",
   alternates: {
     canonical: "/",
   },

@@ -25,7 +25,7 @@ export const Navbar = () => {
   const pathname = usePathname();
 
   return (
-    <nav className="mx-auto flex max-w-2xl flex-col items-start gap-4 px-4 pt-4 md:pt-8">
+    <nav className="mx-auto flex max-w-2xl flex-col items-start gap-5 px-4 pt-6 md:pt-10">
       <div className="flex items-center gap-2 perspective-distant">
         <motion.div
           variants={GENERAL_VARIANT}
@@ -36,11 +36,11 @@ export const Navbar = () => {
           className="rounded-md bg-white shadow-md dark:bg-neutral-800"
         >
           <Image
-            src="https://assets.aceternity.com/avatars/manu.webp"
+            src="/logo.png"
             alt="1xcoder"
             width={40}
             height={40}
-            className="aspect-square size-6 rounded-md shadow-2xl"
+            className="aspect-square size-6 rounded-md shadow-2xl object-cover"
           />
         </motion.div>
         <h1 className="text-foreground text-xl font-medium tracking-tight md:text-2xl">
@@ -49,7 +49,7 @@ export const Navbar = () => {
           <span className="font-normal italic">1xcoder</span>
         </h1>
       </div>
-      <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm md:text-[15px]">
+      <div className="mt-1 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm md:text-[15px]">
         {links.map((link) => {
            const active = isActivePath(pathname, link.href);
            return (

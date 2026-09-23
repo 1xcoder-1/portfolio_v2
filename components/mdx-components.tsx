@@ -15,12 +15,42 @@ import Button from "./button";
 
 const TweetEmbed = () => null;
 
-const MdxImage = ({ width, height, alt = "", ...props }) => {
-  if (width && height) {
-    return <NextImage width={width} height={height} alt={alt} {...props} />;
+const MdxImage = ({ width, height, alt = "", src, className, priority, ...props }) => {
+  if (src && (typeof src === "string" && (src.endsWith(".svg") || src.includes(".svg")))) {
+    return (
+      <img
+        src={src}
+        alt={alt}
+        className={className || "my-6 h-auto w-full rounded-xl border border-neutral-200 shadow-md dark:border-neutral-800"}
+        loading="lazy"
+        {...props}
+      />
+    );
   }
 
-  return <img alt={alt} loading="lazy" {...props} />;
+  if (width && height) {
+    return (
+      <NextImage
+        src={src}
+        width={width}
+        height={height}
+        alt={alt}
+        priority={priority}
+        className={className || "my-6 h-auto w-full rounded-xl border border-neutral-200 shadow-md dark:border-neutral-800"}
+        {...props}
+      />
+    );
+  }
+
+  return (
+    <img
+      src={src}
+      alt={alt}
+      loading="lazy"
+      className={className || "my-6 h-auto w-full rounded-xl border border-neutral-200 shadow-md dark:border-neutral-800"}
+      {...props}
+    />
+  );
 };
 
 const CustomLink = (props) => {

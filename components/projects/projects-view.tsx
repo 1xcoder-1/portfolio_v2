@@ -175,16 +175,16 @@ export function ProjectsView() {
   return (
     <div className="min-h-screen">
       {/* Header Section */}
-      <Container className="pt-4">
+      <Container className="pt-8 md:pt-10">
         <motion.div
           variants={STAGGER_CONTAINER}
           initial="hidden"
           animate="show"
-          className="flex flex-col gap-5"
+          className="flex flex-col gap-7"
         >
           <motion.span
             variants={FADE_UP_VARIANT}
-            className="text-foreground/45 font-mono text-[11px] font-medium tracking-[0.2em] uppercase"
+            className="text-foreground/45 font-mono text-[12px] font-medium tracking-[0.2em] uppercase"
           >
             WORKS
           </motion.span>

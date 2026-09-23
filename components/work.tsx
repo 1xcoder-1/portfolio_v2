@@ -1,56 +1,39 @@
 "use client";
 
 import React from "react";
-import { Box } from "./box";
-import Link from "next/link";
 import {
-  IconShoppingBag,
-  IconMessageCircle,
-  IconCoins,
-  IconSparkles,
+  IconCode,
+  IconBrandPython,
+  IconGitBranch,
+  IconBrandGithub,
 } from "@tabler/icons-react";
-import { Subheading } from "./subheading";
 import { motion } from "motion/react";
 import { STAGGER_CONTAINER, FADE_UP_VARIANT } from "@/lib/motion-config";
 
 const workItems = [
   {
-    href: "https://e-commerce-app-cf00d.web.app/",
-    title: "Art Connection",
-    description: "Full-stack E-Commerce platform for framed artwork with Firebase.",
-    icon: (
-      <IconShoppingBag className="size-4 text-white drop-shadow-xl drop-shadow-black/40" />
-    ),
-    boxClassName: "bg-linear-to-b from-amber-400 to-amber-600 ring-offset-amber-500",
+    title: "Web & Mobile Development",
+    description: "Building responsive web apps and cross-platform mobile software.",
+    icon: <IconCode className="size-4 text-white" />,
+    iconBg: "bg-linear-to-b from-blue-500 to-indigo-600 shadow-md shadow-blue-500/20",
   },
   {
-    href: "https://app-socialmedia.vercel.app/",
-    title: "Wonder App",
-    description: "Modern social media web application with real-time posts & clean UX.",
-    icon: (
-      <IconMessageCircle className="size-4 text-white drop-shadow-xl drop-shadow-black/40" />
-    ),
-    boxClassName:
-      "bg-linear-to-b from-blue-400 to-blue-600 ring-offset-blue-500",
+    title: "Python & FastAPI Development",
+    description: "Building REST APIs, backend logic, and Python automation scripts.",
+    icon: <IconBrandPython className="size-4 text-white" />,
+    iconBg: "bg-linear-to-b from-purple-500 to-indigo-600 shadow-md shadow-purple-500/20",
   },
   {
-    href: "https://app-crypto2.vercel.app/",
-    title: "Crypto Base",
-    description: "API-driven cryptocurrency tracker powered by CoinGecko API.",
-    icon: (
-      <IconCoins className="size-4 text-white drop-shadow-xl drop-shadow-black/40" />
-    ),
-    boxClassName:
-      "bg-linear-to-b from-emerald-400 to-emerald-600 ring-offset-emerald-500",
+    title: "Workflow Automations & n8n",
+    description: "Building automated backend pipelines and integrations using n8n.",
+    icon: <IconGitBranch className="size-4 text-white" />,
+    iconBg: "bg-linear-to-b from-emerald-500 to-teal-600 shadow-md shadow-emerald-500/20",
   },
   {
-    href: "https://1xcoder.vercel.app/",
-    title: "Creative Labs & UI",
-    description: "Design engineering, MERN stack experiments, and interactive components.",
-    icon: (
-      <IconSparkles className="size-4 text-white drop-shadow-xl drop-shadow-black/40" />
-    ),
-    boxClassName: "bg-linear-to-b from-purple-400 to-purple-600 ring-offset-purple-500",
+    title: "Open Source & Tech Exploration",
+    description: "Building open-source tools and experimenting with emerging tech.",
+    icon: <IconBrandGithub className="size-4 text-white" />,
+    iconBg: "bg-linear-to-b from-amber-500 to-orange-600 shadow-md shadow-amber-500/20",
   },
 ];
 
@@ -61,28 +44,37 @@ export const Work = () => {
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, amount: 0.2 }}
+      className="flex flex-col gap-5"
     >
-      <Subheading>Things I do & Build</Subheading>
-      <div className="mt-4 flex flex-col gap-6 md:gap-4">
+      <motion.span
+        variants={FADE_UP_VARIANT}
+        className="text-foreground/45 font-mono text-[12px] font-medium tracking-[0.2em] uppercase"
+      >
+        THINGS I DO
+      </motion.span>
+      <div className="mt-1 flex flex-col gap-3.5">
         {workItems.map((item) => (
           <motion.div
-            key={item.href}
+            key={item.title}
             variants={FADE_UP_VARIANT}
             whileHover={{ x: 3 }}
             transition={{ type: "spring", stiffness: 400, damping: 25 }}
           >
-            <Link
-              href={item.href}
-              target="_blank"
-              className="group flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-2"
-            >
-              <Box className={`mr-4 ${item.boxClassName}`}>{item.icon}</Box>
-              <p className="text-foreground group-hover:text-primary font-medium transition-colors">
-                {item.title}
-              </p>
-              <div className="hidden size-1 rounded-full bg-neutral-200 md:block"></div>
-              <p className="text-foreground/70">{item.description}</p>
-            </Link>
+            <div className="flex items-start gap-3.5 py-1">
+              <div
+                className={`flex size-8.5 shrink-0 items-center justify-center rounded-[10px] shadow-sm ring-1 ring-white/20 mt-0.5 ${item.iconBg}`}
+              >
+                {item.icon}
+              </div>
+              <div className="flex flex-col gap-0.5 text-sm md:text-[15px]">
+                <span className="font-semibold text-foreground">
+                  {item.title}
+                </span>
+                <span className="text-foreground/65 text-xs md:text-sm font-normal">
+                  {item.description}
+                </span>
+              </div>
+            </div>
           </motion.div>
         ))}
       </div>

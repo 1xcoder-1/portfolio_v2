@@ -2,9 +2,6 @@
 import React from "react";
 
 export default function Divider() {
-  return (
-    <div className="my-4">
-      <hr />
-    </div>
-  );
+  return <hr className="my-4 border-neutral-200 dark:border-neutral-800" />;
 }
+

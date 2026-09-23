@@ -25,10 +25,11 @@
 //   );
 // }
 
+// @ts-nocheck
 export default function StepCheck({ title }) {
   return (
-    <div className="flex font-small items-baseline mb-2">
-      <div className="">
+    <span className="flex font-small items-baseline mb-2">
+      <span className="shrink-0">
         <svg
           className="h-5 w-5 mr-2 text-green-500 inline-block"
           xmlns="http://www.w3.org/2000/svg"
@@ -43,8 +44,9 @@ export default function StepCheck({ title }) {
             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
-      </div>
+      </span>
       <span className="content-center">{title}</span>
-    </div>
+    </span>
   );
 }
+

@@ -12,7 +12,7 @@ export interface QuoteProps {
 
 export function Quote({
   kicker = "MOTIVATIONAL THOUGHTS & CREED",
-  quote = '"If you don\'t give up, you still have a chance. Giving up is the greatest failure."',
+  quote = 'If you don\'t give up, you still have a chance. Giving up is the greatest failure.',
   author = "Jack Ma, Alibaba Founder",
 }: QuoteProps) {
   return (
@@ -25,7 +25,7 @@ export function Quote({
     >
       <motion.span
         variants={FADE_UP_VARIANT}
-        className="text-foreground/45 font-mono text-[11px] font-medium tracking-[0.2em] uppercase"
+        className="text-foreground/45 font-mono text-[12px] font-medium tracking-[0.2em] uppercase"
       >
         {kicker}
       </motion.span>
